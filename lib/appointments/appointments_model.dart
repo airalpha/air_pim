@@ -16,3 +16,5 @@ class AppointmentsModel extends BaseModel {
     notifyListeners();
   }
 }
+
+AppointmentsModel appointmentsModel = AppointmentsModel();
