@@ -1,3 +1,4 @@
+import 'package:air_pmi/appointments/appointments_model.dart';
 import 'package:air_pmi/tasks/tasks_db_worker.dart';
 import 'package:air_pmi/tasks/tasks_model.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,8 @@ class TasksEntry extends StatelessWidget {
                       onPressed: () async {
                         String chosenDate = await utils.selectDate(
                           inContext, tasksModel, tasksModel.entityBeingEdited.dueDate);
-                        if(chosenDate != null) {
+                        if(chosenDate != null)
                           tasksModel.entityBeingEdited.dueDate = chosenDate;
-                        }
                       },
                     ),
                   )
@@ -73,7 +73,7 @@ class TasksEntry extends StatelessWidget {
                   FlatButton(
                     color: Colors.red,
                     textColor: Colors.white,
-                    child: Text("Anuler"),
+                    child: Text("Annuler"),
                     onPressed: () {
                       FocusScope.of(inContext).requestFocus(FocusNode());
                       inModel.setStackIndex(0);

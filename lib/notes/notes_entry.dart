@@ -57,7 +57,7 @@ class NotesEntry extends StatelessWidget {
                       controller: _contentController,
                       validator: (String value) {
                         if(value.length == 0) {
-                          return "Enter content";
+                          return "Entrer le contenu";
                         }
                         return null;
                       },
