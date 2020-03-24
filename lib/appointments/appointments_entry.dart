@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:air_pmi/appointments/appointments_db_worker.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'appointments_model.dart' show AppointmentsModel, appointmentsModel;
@@ -106,7 +107,7 @@ class AppointmentsEntry extends StatelessWidget {
                   FlatButton(
                     color: Colors.green,
                     textColor: Colors.white,
-                    child: Text("Ajouter"),
+                    child: (appointmentsModel.entityBeingEdited.id == null) ? Text("Ajouter") : Text("Modifier"),
                     onPressed: () {
                       _save(inContext, appointmentsModel);
                     },
@@ -142,7 +143,22 @@ class AppointmentsEntry extends StatelessWidget {
     if(!_formKey.currentState.validate())
       return;
     if(appointmentsModel.entityBeingEdited.id == null) {
-
+      await AppointMentsDBWorker.db.create(
+        appointmentsModel.entityBeingEdited
+      );
+    } else {
+      await AppointMentsDBWorker.db.update(
+        appointmentsModel.entityBeingEdited
+      );
     }
+    appointmentsModel.loadData("appointments", AppointMentsDBWorker.db);
+    appointmentsModel.setStackIndex(0);
+    Scaffold.of(inContext).showSnackBar(
+        SnackBar(
+            backgroundColor : Colors.green,
+            duration : Duration(seconds : 2),
+            content : (appointmentsModel.entityBeingEdited.id == null) ? Text("Rendez-vous ajouté !") : Text("Rendez-vous Modifié !")
+        )
+    );
   }
 }
