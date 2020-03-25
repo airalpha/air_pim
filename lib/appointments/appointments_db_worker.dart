@@ -86,7 +86,7 @@ class AppointMentsDBWorker {
   Future update(Appointment appointment) async {
     Database db = await database;
 
-    return await db.update("notes", appointmentToMap(appointment),
+    return await db.update("appointments", appointmentToMap(appointment),
         where: "id = ?", whereArgs: [appointment.id]);
   }
 

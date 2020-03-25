@@ -110,7 +110,7 @@ class AppointmentsList extends StatelessWidget {
                               ),
                               Divider(),
                               Expanded(
-                                child: _empty(inDate) ? inModel.buildNoContent(inContext, "Pas de rendez-vous") : ListView.builder(
+                                child: _empty(inDate) ? inModel.buildNoContent(inContext, "Pas de rendez-vous", height: 200.0, font_size: 30.0) : ListView.builder(
                                   itemCount: appointmentsModel.entityList.length,
                                   itemBuilder: (BuildContext inContext, int inIndex) {
                                     Appointment appointment =
@@ -181,7 +181,33 @@ class AppointmentsList extends StatelessWidget {
         });
   }
 
-  void _editAppointment(BuildContext inContext, Appointment appointment) {}
+  void _editAppointment(BuildContext inContext, Appointment appointment) async {
+    appointmentsModel.entityBeingEdited = await AppointMentsDBWorker.db.get(appointment.id);
+    if (appointmentsModel.entityBeingEdited.apptDate == null) {
+      appointmentsModel.setChosenDate(null);
+    } else {
+      List dateParts =
+      appointmentsModel.entityBeingEdited.apptDate.split(",");
+      DateTime apptDate = DateTime(
+          int.parse(dateParts[0]), int.parse(dateParts[1]),
+          int.parse(dateParts[2]));
+
+      appointmentsModel.setChosenDate(
+          DateFormat.yMMMMd("en_US").format(apptDate.toLocal()));
+    }
+    if (appointmentsModel.entityBeingEdited.apptTime == null) {
+      appointmentsModel.setApptTime(null);
+    } else {
+      List timeParts =
+      appointmentsModel.entityBeingEdited.apptTime.split(",");
+      TimeOfDay apptTime = TimeOfDay(
+          hour : int.parse(timeParts[0]),
+          minute : int.parse(timeParts[1]));
+      appointmentsModel.setApptTime(apptTime.format(inContext));
+    }
+    appointmentsModel.setStackIndex(1);
+    Navigator.pop(inContext);
+  }
 
   _deleteAppointment(BuildContext inContext, Appointment appointment) {
     return showDialog(

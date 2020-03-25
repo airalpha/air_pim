@@ -28,24 +28,25 @@ class BaseModel extends Model {
     notifyListeners();
   }
 
-  Container buildNoContent(BuildContext inContext, String message) {
+  Container buildNoContent(BuildContext inContext, String message, {height: 300.0, font_size: 50.0}) {
     final Orientation orientation = MediaQuery
         .of(inContext)
         .orientation;
     return Container(
+      padding: EdgeInsets.only(top: 10),
       child: Center(
         child: ListView(
           children: <Widget>[
             SvgPicture.asset(
               'assets/images/no_data.svg',
-              height: orientation == Orientation.portrait ? 300.0 : 200,
+              height: orientation == Orientation.portrait ? height : 200,
             ),
             Text(
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.blue,
-                fontSize: 50.0,
+                fontSize: font_size,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
               ),
