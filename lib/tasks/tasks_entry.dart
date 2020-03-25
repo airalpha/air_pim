@@ -83,7 +83,7 @@ class TasksEntry extends StatelessWidget {
                   FlatButton(
                     color: Colors.green,
                     textColor: Colors.white,
-                    child: (inModel.entityBeingEdited.id == null) ? Text("Ajouter") : Text("Modifier"),
+                    child: (inModel.entityBeingEdited?.id == null) ? Text("Ajouter") : Text("Modifier"),
                     onPressed: () {
                       _save(inContext, tasksModel);
                     },
@@ -99,7 +99,7 @@ class TasksEntry extends StatelessWidget {
 
   void _save(BuildContext inContext, TasksModel inModel) async {
     if (!_formKey.currentState.validate()) { return; }
-    if (inModel.entityBeingEdited.id == null) {
+    if (inModel.entityBeingEdited?.id == null) {
       await TasksDBWorker.db.create(
           tasksModel.entityBeingEdited
       );
@@ -114,7 +114,7 @@ class TasksEntry extends StatelessWidget {
         SnackBar(
             backgroundColor : Colors.green,
             duration : Duration(seconds : 2),
-            content : (inModel.entityBeingEdited.id == null) ? Text("Tache ajoutée !") : Text("Tache Modifiée !")
+            content : (inModel.entityBeingEdited?.id == null) ? Text("Tache ajoutée !") : Text("Tache Modifiée !")
         )
     );
   }

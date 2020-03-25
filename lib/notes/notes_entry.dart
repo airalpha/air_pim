@@ -188,7 +188,7 @@ class NotesEntry extends StatelessWidget {
                   FlatButton(
                     color: Colors.green,
                     textColor: Colors.white,
-                    child: (inModel.entityBeingEdited.id == null) ? Text("Ajouter") : Text("Modifier"),
+                    child: (inModel.entityBeingEdited?.id == null) ? Text("Ajouter") : Text("Modifier"),
                     onPressed: () {
                       _save(inContext, notesModel);
                     },
@@ -204,7 +204,7 @@ class NotesEntry extends StatelessWidget {
 
   void _save(BuildContext inContext, NotesModel inModel) async {
     if (!_formKey.currentState.validate()) { return; }
-    if (inModel.entityBeingEdited.id == null) {
+    if (inModel.entityBeingEdited?.id == null) {
       await NotesDBWorker.db.create(
           notesModel.entityBeingEdited
       );
@@ -219,7 +219,7 @@ class NotesEntry extends StatelessWidget {
         SnackBar(
             backgroundColor : Colors.green,
             duration : Duration(seconds : 2),
-            content : (inModel.entityBeingEdited.id == null) ? Text("Note ajoutée !") : Text("Note Modifiée !")
+            content : (inModel.entityBeingEdited?.id == null) ? Text("Note ajoutée !") : Text("Note Modifiée !")
         )
     );
   }

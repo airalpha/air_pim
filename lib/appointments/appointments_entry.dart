@@ -24,6 +24,11 @@ class AppointmentsEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(appointmentsModel.entityBeingEdited != null) {
+      _titleController.text = appointmentsModel.entityBeingEdited.title;
+      _descriptionController.text = appointmentsModel.entityBeingEdited.description;
+    }
+
     return ScopedModel(
       model: appointmentsModel,
       child: ScopedModelDescendant<AppointmentsModel>(
@@ -107,7 +112,7 @@ class AppointmentsEntry extends StatelessWidget {
                   FlatButton(
                     color: Colors.green,
                     textColor: Colors.white,
-                    child: (appointmentsModel.entityBeingEdited.id == null) ? Text("Ajouter") : Text("Modifier"),
+                    child: (appointmentsModel.entityBeingEdited?.id == null) ? Text("Ajouter") : Text("Modifier"),
                     onPressed: () {
                       _save(inContext, appointmentsModel);
                     },
@@ -142,7 +147,8 @@ class AppointmentsEntry extends StatelessWidget {
   void _save(BuildContext inContext, AppointmentsModel appointmentsModel) async {
     if(!_formKey.currentState.validate())
       return;
-    if(appointmentsModel.entityBeingEdited.id == null) {
+
+    if(appointmentsModel.entityBeingEdited?.id == null) {
       await AppointMentsDBWorker.db.create(
         appointmentsModel.entityBeingEdited
       );
@@ -157,7 +163,7 @@ class AppointmentsEntry extends StatelessWidget {
         SnackBar(
             backgroundColor : Colors.green,
             duration : Duration(seconds : 2),
-            content : (appointmentsModel.entityBeingEdited.id == null) ? Text("Rendez-vous ajouté !") : Text("Rendez-vous Modifié !")
+            content : (appointmentsModel.entityBeingEdited?.id == null) ? Text("Rendez-vous ajouté !") : Text("Rendez-vous Modifié !")
         )
     );
   }

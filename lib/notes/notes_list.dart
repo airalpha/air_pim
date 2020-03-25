@@ -11,7 +11,7 @@ class NotesList extends StatelessWidget {
       model: notesModel,
       child: ScopedModelDescendant<NotesModel>(
         builder: (BuildContext inContext, Widget inChild, NotesModel inModel) {
-          return Scaffold(
+          return inModel.isLoading ? inModel.buildLoading() : Scaffold(
             floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,

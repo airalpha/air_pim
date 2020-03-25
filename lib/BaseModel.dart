@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import "package:scoped_model/scoped_model.dart";
 
 class BaseModel extends Model {
+  bool isLoading = false;
   int stackIndex = 0;
   List entityList = [];
   var entityBeingEdited;
@@ -15,7 +16,10 @@ class BaseModel extends Model {
   }
 
   void loadData(String inEntityType, dynamic inDatabase) async {
+    isLoading = true;
+    notifyListeners();
     entityList = await inDatabase.getAll();
+    isLoading = false;
     notifyListeners();
   }
 
@@ -50,6 +54,12 @@ class BaseModel extends Model {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
     );
   }
 }

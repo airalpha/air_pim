@@ -15,7 +15,7 @@ class TasksList extends StatelessWidget {
         child: ScopedModelDescendant<TasksModel>(
           builder:
               (BuildContext inContext, Widget inChild, TasksModel inModel) {
-            return Scaffold(
+            return inModel.isLoading ? inModel.buildLoading() : Scaffold(
               floatingActionButton: FloatingActionButton(
                 child: Icon(
                   Icons.add,
@@ -34,6 +34,12 @@ class TasksList extends StatelessWidget {
                       itemBuilder: (BuildContext context, int index) {
                         Task task = tasksModel.entityList[index];
                         String sDueDate;
+                        String description;
+                        try {
+                          description = "${task.description.substring(0, 25)} ...";
+                        } catch (e){
+                          description = task.description;
+                        }
                         if (task.dueDate != null) {
                           List dateParts = task.dueDate.split(",");
                           DateTime dueDate = DateTime(int.parse(dateParts[0]),
@@ -54,7 +60,7 @@ class TasksList extends StatelessWidget {
                               },
                             ),
                             title: Text(
-                              "${task.description.substring(0, 25)} ...",
+                              "${description}",
                               style: task.completed == 'true'
                                   ? TextStyle(
                                       color: Theme.of(inContext).disabledColor,

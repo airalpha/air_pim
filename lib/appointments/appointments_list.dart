@@ -1,5 +1,6 @@
 import 'package:air_pmi/appointments/appointments_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
@@ -22,15 +23,24 @@ class AppointmentsList extends StatelessWidget {
           Event(
               date: apptDate,
               icon: Container(
-                decoration: BoxDecoration(color: Colors.blue),
-              )));
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(1000)),
+                    border: Border.all(color: Colors.blue, width: 2.0)),
+                child: Icon(
+                  Icons.event_available,
+                  color: Colors.amber,
+                ),
+              )
+          )
+      );
     }
     return ScopedModel<AppointmentsModel>(
       model: appointmentsModel,
       child: ScopedModelDescendant<AppointmentsModel>(
         builder: (BuildContext inContext, Widget inChild,
             AppointmentsModel inModel) {
-          return Scaffold(
+          return inModel.isLoading ? inModel.buildLoading() : Scaffold(
             floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -39,8 +49,10 @@ class AppointmentsList extends StatelessWidget {
               onPressed: () async {
                 appointmentsModel.entityBeingEdited = Appointment();
                 DateTime now = DateTime.now();
-                appointmentsModel.entityBeingEdited.apptDate = "${now.year},${now.month},${now.day}";
-                appointmentsModel.setChosenDate(DateFormat.yMMMMd("en_US").format(now.toLocal()));
+                appointmentsModel.entityBeingEdited.apptDate =
+                    "${now.year},${now.month},${now.day}";
+                appointmentsModel.setChosenDate(
+                    DateFormat.yMMMMd("en_US").format(now.toLocal()));
                 appointmentsModel.setApptTime(null);
                 appointmentsModel.setStackIndex(1);
               },
@@ -48,18 +60,19 @@ class AppointmentsList extends StatelessWidget {
             body: Column(
               children: <Widget>[
                 Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10),
-                    child: CalendarCarousel<Event>(
-                      thisMonthDayBorderColor: Colors.blueGrey,
-                      daysHaveCircularBorder: true,
-                      markedDatesMap: _markedDateMap,
-                      onDayPressed:
-                          (DateTime inDate, List<Event> inEvents) {
-                        _showAppointments(inDate, inContext);
-                      })
-                  )
-                )
+                    child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        child: CalendarCarousel<Event>(
+                            thisMonthDayBorderColor: Colors.blueGrey,
+                            daysHaveCircularBorder: true,
+                            markedDatesMap: _markedDateMap,
+                            markedDateCustomShapeBorder: CircleBorder(
+                                side: BorderSide(color: Colors.blue, width: 1.5)
+                            ),
+                            onDayPressed:
+                                (DateTime inDate, List<Event> inEvents) {
+                              _showAppointments(inDate, inContext);
+                            })))
               ],
             ),
           );
@@ -85,29 +98,34 @@ class AppointmentsList extends StatelessWidget {
                         child: GestureDetector(
                           child: Column(
                             children: <Widget>[
-                              Text(DateFormat.yMMMMd("en_US").format(inDate.toLocal()),
+                              Text(
+                                DateFormat.yMMMMd("en_US")
+                                    .format(inDate.toLocal()),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Theme.of(inContext).accentColor,
-                                  fontSize: 24
-                                ),
+                                    color: Theme.of(inContext).accentColor,
+                                    fontSize: 24),
                               ),
                               Divider(),
                               Expanded(
                                 child: ListView.builder(
                                   itemCount: appointmentsModel.entityList.length,
                                   itemBuilder: (BuildContext inContext, int inIndex) {
-                                    Appointment appointment = appointmentsModel.entityList[inIndex];
-                                    if (appointment.apptDate != "${inDate.year},${inDate.month},${inDate.day}")
-                                      return Container(child: Text("${inDate.toString()}"),);
+                                    Appointment appointment =
+                                        appointmentsModel.entityList[inIndex];
+                                    if (appointment.apptDate !=
+                                        "${inDate.year},${inDate.month},${inDate.day}")
+                                      return Container(
+                                        height: 0,
+                                      );
 
                                     String apptTime = "";
                                     if (appointment.apptTime != null) {
-                                      List timeParts = appointment.apptTime.split(",");
+                                      List timeParts =
+                                          appointment.apptTime.split(",");
                                       TimeOfDay at = TimeOfDay(
-                                        hour: int.parse(timeParts[0]),
-                                        minute: int.parse(timeParts[1])
-                                      );
+                                          hour: int.parse(timeParts[0]),
+                                          minute: int.parse(timeParts[1]));
                                       apptTime = " (${at.format(inContext)})";
                                     }
 
@@ -116,27 +134,28 @@ class AppointmentsList extends StatelessWidget {
                                       actionExtentRatio: .25,
                                       child: Container(
                                         margin: EdgeInsets.only(bottom: 8),
-                                        color: Colors.grey.shade300,
+                                        color: Colors.blue.shade500,
                                         child: ListTile(
-                                          title: Text("${appointment.title} $apptTime"),
+                                          title: Text(
+                                              "${appointment.title} $apptTime"),
                                           subtitle: appointment.description ==
-                                              null
+                                                  null
                                               ? null
-                                              : Text("${appointment.description}"),
+                                              : Text(
+                                                  "${appointment.description}"),
                                           onTap: () async {
-                                            //_editAppointment(inContext, appointment);
+                                            _editAppointment(inContext, appointment);
                                           },
                                         ),
                                       ),
                                       secondaryActions: <Widget>[
                                         IconSlideAction(
-                                          caption: "Delete",
-                                          color: Colors.red,
-                                          icon: Icons.delete,
-                                          onTap: (){
-
-                                          }
-                                        )
+                                            caption: "Supprimer",
+                                            color: Colors.red,
+                                            icon: Icons.delete,
+                                            onTap: () {
+                                              _deleteAppointment(inContext, appointment);
+                                            })
                                       ],
                                     );
                                   },
@@ -152,7 +171,43 @@ class AppointmentsList extends StatelessWidget {
               },
             ),
           );
-        }
-    );
+        });
+  }
+
+  void _editAppointment(BuildContext inContext, Appointment appointment) {}
+
+  _deleteAppointment(BuildContext inContext, Appointment appointment) {
+    return showDialog(
+        context: inContext,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Supprimer le rendez-vous"),
+            content: Text("Voulez vous supprimer cette tache ?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Annuler"),
+                textColor: Colors.green,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Supprimer"),
+                textColor: Colors.red,
+                onPressed: () async {
+                  await TasksDBWorker.db.delete(task.id);
+                  Navigator.of(context).pop();
+                  Scaffold.of(inContext).showSnackBar(SnackBar(
+                    backgroundColor: Colors.red,
+                    duration: Duration(seconds: 2),
+                    content: Text("Tache supprimer !"),
+                  ));
+                  tasksModel.loadData("tasks", TasksDBWorker.db);
+                },
+              )
+            ],
+          );
+        });
   }
 }
