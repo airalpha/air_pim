@@ -1,3 +1,4 @@
+import 'package:air_pmi/appointments/appointments_db_worker.dart';
 import 'package:air_pmi/appointments/appointments_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -82,6 +83,7 @@ class AppointmentsList extends StatelessWidget {
   }
 
   void _showAppointments(DateTime inDate, BuildContext inContext) async {
+    debugPrint(_empty(inDate).toString());
     showModalBottomSheet(
         context: inContext,
         builder: (BuildContext inContext) {
@@ -108,16 +110,14 @@ class AppointmentsList extends StatelessWidget {
                               ),
                               Divider(),
                               Expanded(
-                                child: ListView.builder(
+                                child: _empty(inDate) ? inModel.buildNoContent(inContext, "Pas de rendez-vous") : ListView.builder(
                                   itemCount: appointmentsModel.entityList.length,
                                   itemBuilder: (BuildContext inContext, int inIndex) {
                                     Appointment appointment =
                                         appointmentsModel.entityList[inIndex];
                                     if (appointment.apptDate !=
                                         "${inDate.year},${inDate.month},${inDate.day}")
-                                      return Container(
-                                        height: 0,
-                                      );
+                                      return Container(height: 0,);
 
                                     String apptTime = "";
                                     if (appointment.apptTime != null) {
@@ -137,25 +137,32 @@ class AppointmentsList extends StatelessWidget {
                                         color: Colors.blue.shade500,
                                         child: ListTile(
                                           title: Text(
-                                              "${appointment.title} $apptTime"),
+                                              "${appointment.title} $apptTime",
+                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                          ),
                                           subtitle: appointment.description ==
                                                   null
                                               ? null
                                               : Text(
-                                                  "${appointment.description}"),
+                                                  "${appointment.description}",
+                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+                                          ),
                                           onTap: () async {
                                             _editAppointment(inContext, appointment);
                                           },
                                         ),
                                       ),
                                       secondaryActions: <Widget>[
-                                        IconSlideAction(
-                                            caption: "Supprimer",
-                                            color: Colors.red,
-                                            icon: Icons.delete,
-                                            onTap: () {
-                                              _deleteAppointment(inContext, appointment);
-                                            })
+                                        Container(
+                                          child: IconSlideAction(
+                                              caption: "Supprimer",
+                                              color: Colors.red,
+                                              icon: Icons.delete,
+                                              onTap: () {
+                                                _deleteAppointment(inContext, appointment);
+                                              }),
+                                          margin: EdgeInsets.only(bottom: 8),
+                                        )
                                       ],
                                     );
                                   },
@@ -183,7 +190,7 @@ class AppointmentsList extends StatelessWidget {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text("Supprimer le rendez-vous"),
-            content: Text("Voulez vous supprimer cette tache ?"),
+            content: Text("Voulez vous supprimer ce rendez-vous ?"),
             actions: <Widget>[
               FlatButton(
                 child: Text("Annuler"),
@@ -196,18 +203,30 @@ class AppointmentsList extends StatelessWidget {
                 child: Text("Supprimer"),
                 textColor: Colors.red,
                 onPressed: () async {
-                  await TasksDBWorker.db.delete(task.id);
+                  await AppointMentsDBWorker.db.delete(appointment.id);
                   Navigator.of(context).pop();
                   Scaffold.of(inContext).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
                     duration: Duration(seconds: 2),
-                    content: Text("Tache supprimer !"),
+                    content: Text("Rendez-vous supprimer !"),
                   ));
-                  tasksModel.loadData("tasks", TasksDBWorker.db);
+                  appointmentsModel.loadData("appointments", AppointMentsDBWorker.db);
                 },
               )
             ],
           );
         });
+  }
+
+  _empty(DateTime inDate) {
+    int count = 0;
+    for (int i = 0; i < appointmentsModel.entityList.length; i++) {
+      Appointment appointment = appointmentsModel.entityList[i];
+      if (appointment.apptDate == "${inDate.year},${inDate.month},${inDate.day}") {
+        count++;
+      }
+    }
+
+    return count==0;
   }
 }

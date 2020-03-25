@@ -35,7 +35,6 @@ class BaseModel extends Model {
     return Container(
       child: Center(
         child: ListView(
-          padding: EdgeInsets.only(top: 50.0),
           children: <Widget>[
             SvgPicture.asset(
               'assets/images/no_data.svg',

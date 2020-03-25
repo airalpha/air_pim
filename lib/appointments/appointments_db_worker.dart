@@ -93,7 +93,7 @@ class AppointMentsDBWorker {
   Future delete(int id) async {
     Database db = await database;
     return await  db.delete(
-      "notes",
+      "appointments",
       where: "id = ?",
       whereArgs: [id]
     );
