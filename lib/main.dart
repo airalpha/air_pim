@@ -1,5 +1,4 @@
 import "dart:io";
-import 'package:air_pmi/Home.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
@@ -76,10 +75,8 @@ class FlutterBook extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              //Appointments(),
               Appointments(),
-              MyHomePage(),
-              //Contacts(),
+              Contacts(),
               Notes(),
               Tasks(),
             ],

@@ -83,7 +83,6 @@ class AppointmentsList extends StatelessWidget {
   }
 
   void _showAppointments(DateTime inDate, BuildContext inContext) async {
-    debugPrint(_empty(inDate).toString());
     showModalBottomSheet(
         context: inContext,
         builder: (BuildContext inContext) {
