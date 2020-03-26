@@ -14,7 +14,7 @@ class ContactsList extends StatelessWidget {
       model: contactsModel,
       child: ScopedModelDescendant<ContactsModel>(
         builder: (BuildContext inContext, Widget inChild, ContactsModel inModel) {
-          return Scaffold(
+          return inModel.isLoading ? inModel.buildLoading() : Scaffold(
             floatingActionButton: FloatingActionButton(
               child: Icon(
                 Icons.add,
@@ -29,7 +29,9 @@ class ContactsList extends StatelessWidget {
                 contactsModel.setStackIndex(1);
               },
             ),
-            body: ListView.builder(
+            body: contactsModel.entityList.isEmpty
+                ? contactsModel.buildNoContent(inContext, "Aucun contact")
+                : ListView.builder(
               itemCount: contactsModel.entityList.length,
               itemBuilder:
               (BuildContext context, int inIndex) {
