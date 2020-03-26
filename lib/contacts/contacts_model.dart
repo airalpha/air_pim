@@ -12,3 +12,5 @@ class ContactsModel extends BaseModel {
     notifyListeners();
   }
 }
+
+ContactsModel contactsModel = ContactsModel();
