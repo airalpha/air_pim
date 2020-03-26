@@ -1,6 +1,8 @@
-import 'package:air_pmi/contacts/contacts_model.dart' show contactsModel, ContactsModel;
+import 'contacts_model.dart' show contactsModel, ContactsModel;
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import 'contacts_list.dart';
 
 class Contacts extends StatelessWidget {
   @override
