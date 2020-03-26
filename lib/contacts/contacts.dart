@@ -1,3 +1,4 @@
+import 'contacts_entry.dart';
 import 'contacts_model.dart' show contactsModel, ContactsModel;
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'contacts_model.dart' show Contact, ContactsModel, contactsModel;
 import '../utils.dart' as utils;
@@ -28,7 +27,7 @@ class ContactsList extends StatelessWidget {
                 contactsModel.setStackIndex(1);
               },
             ),
-            body: ,
+            body: Container(),
           );
         },
       ),
