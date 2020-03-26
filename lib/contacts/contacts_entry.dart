@@ -14,9 +14,26 @@ class ContactsEntry extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  ContactsEntry() {
+    _nameController.addListener(() {
+      contactsModel.entityBeingEdited.name = _nameController.text;
+    });
+    _emailController.addListener(() {
+      contactsModel.entityBeingEdited.email = _emailController.text;
+    });
+    _phoneController.addListener(() {
+      contactsModel.entityBeingEdited.phone = _phoneController.text;
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
+    if(contactsModel.entityBeingEdited != null) {
+      _nameController.text = contactsModel.entityBeingEdited.name;
+      _phoneController.text = contactsModel.entityBeingEdited.phone;
+      _emailController.text = contactsModel.entityBeingEdited.email;
+    }
     return ScopedModel(
       model: contactsModel,
       child: ScopedModelDescendant<ContactsModel>(
