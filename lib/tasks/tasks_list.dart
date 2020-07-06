@@ -60,7 +60,7 @@ class TasksList extends StatelessWidget {
                               },
                             ),
                             title: Text(
-                              "${description}",
+                              "$description",
                               style: task.completed == 'true'
                                   ? TextStyle(
                                       color: Theme.of(inContext).disabledColor,

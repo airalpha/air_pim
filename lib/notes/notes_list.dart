@@ -29,6 +29,12 @@ class NotesList extends StatelessWidget {
                     itemCount: notesModel.entityList.length,
                     itemBuilder: (BuildContext context, int index) {
                       Note note = notesModel.entityList[index];
+                      String content;
+                      try {
+                        content = "${note.content.substring(0, 50)} ...";
+                      } catch (e){
+                        content = note.content;
+                      }
                       Color color = Colors.white;
                       switch (note.color) {
                         case "red":
@@ -57,16 +63,21 @@ class NotesList extends StatelessWidget {
                           actionPane: SlidableDrawerActionPane(),
                           actionExtentRatio: .25,
                           secondaryActions: <Widget>[
-                            IconSlideAction(
-                              closeOnTap: true,
-                              caption: "Supprimer",
+                            Card(
                               color: Colors.red,
-                              icon: Icons.delete,
-                              onTap: () => _deleteNote(context, note),
+                              elevation: 8,
+                              child: IconSlideAction(
+                                closeOnTap: true,
+                                caption: "Supprimer",
+                                color: Colors.red,
+                                icon: Icons.delete,
+                                onTap: () => _deleteNote(context, note),
+                              ),
                             )
                           ],
                           child: Card(
                             elevation: 8,
+                            shape: BeveledRectangleBorder(),
                             //color: color,
                             child: ListTile(
                               leading: CircleAvatar(
@@ -77,7 +88,7 @@ class NotesList extends StatelessWidget {
                                 ),
                               ),
                               title: Text('${note.title}'),
-                              subtitle: Text('${note.content} ...'),
+                              subtitle: Text('$content'),
                               onTap: () async {
                                 notesModel.entityBeingEdited =
                                     await NotesDBWorker.db.get(note.id);

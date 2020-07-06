@@ -1,14 +1,17 @@
 import "dart:io";
+import 'package:air_pmi/pages/help.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import "package:path_provider/path_provider.dart";
+import 'package:url_launcher/url_launcher.dart';
 import "appointments/appointments.dart";
 import "contacts/contacts.dart";
 import "notes/notes.dart";
 import "tasks/tasks.dart";
 import "utils.dart" as utils;
+
+const String testDevice = '';
 
 void main() {
   startMeUp() async {
@@ -39,8 +42,14 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: _nav,
       home: DefaultTabController(
         length: 4,
@@ -90,7 +99,6 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
                       _tabController.index = 0;
                     }
                   ),
-                  Divider(),
                   ListTile(
                     title: Text("Contacts"),
                     leading: Icon(Icons.contacts, color: Colors.blue.shade900,),
@@ -99,7 +107,6 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
                       _tabController.index = 1;
                     },
                   ),
-                  Divider(),
                   ListTile(
                     title: Text("Notes"),
                     leading: Icon(Icons.note, color: Colors.blue.shade900,),
@@ -108,7 +115,6 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
                       _tabController.index = 2;
                     },
                   ),
-                  Divider(),
                   ListTile(
                     title: Text("Taches"),
                     leading: Icon(Icons.assignment_turned_in, color: Colors.blue.shade900,),
@@ -117,18 +123,27 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
                       _tabController.index = 3;
                     },
                   ),
-                  Divider(),
                   SizedBox(height: 10.0,),
+                  Divider(),
                   ListTile(
                     title: Text("Aide"),
                     leading: Icon(Icons.live_help, color: Colors.green,),
+                    onTap: () => _nav.currentState.push(MaterialPageRoute(builder: (context) => Help())),
                   ),
-                  Divider(),
                   ListTile(
                     title: Text("Fermer"),
                     leading: Icon(Icons.backspace, color: Colors.red,),
                     onTap: () => _nav.currentState.pop(),
-                  )
+                  ),
+                  ListTile(
+                    title: Text("Contact"),
+                    leading: Icon(Icons.contact_phone, color: Colors.yellowAccent,),
+                    onTap: _launchURL,
+                  ),
+                  ListTile(
+                    title: Text('1.0'),
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
@@ -173,6 +188,15 @@ class _PmiState extends State<Pmi> with SingleTickerProviderStateMixin{
 
   void goTo(int index) {
     
+  }
+
+  _launchURL() async {
+    const url = 'https://airalpha.yo.fr/';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
